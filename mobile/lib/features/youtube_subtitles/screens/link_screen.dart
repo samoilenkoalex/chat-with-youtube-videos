@@ -91,6 +91,7 @@ class _LinkScreenState extends State<LinkScreen> {
   Widget buildTextFormField({required TextEditingController controller, required String hintText}) {
     return TextFormField(
       controller: controller,
+      obscureText: true,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10),
         hintText: hintText,
