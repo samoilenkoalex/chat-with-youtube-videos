@@ -22,6 +22,6 @@
     "langchain": "^0.3.6",
     "tavily": "^1.0.2",
     "xml2js": "^0.6.2",
-    "youtube-dl-exec": "^3.0.10"
+    "youtube-dl-exec": "2.4.17"
   }
 }
