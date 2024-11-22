@@ -1,40 +1,52 @@
 import express from 'express';
+import { configStore } from '../configs/configStore.js';
 
-export default function createRoutes({ openAiRepository }) {
+export default function createRoutes({ langChainRepository }) {
+    if (!langChainRepository) {
+        console.error('langChainRepository is undefined in createRoutes');
+        throw new Error('LangChainRepository is not properly initialized');
+    }
     const router = express.Router();
 
-    router.post('/chat', async (req, res) => {
-        try {
-            const chat = await openAiRepository.implementChat();
-            res.json({ message: chat });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({
-                error: 'An error occurred while processing your request',
-            });
-        }
-    });
-
     router.post('/fetch-subtitles', async (req, res) => {
-        //todo:implement request through params
-
         try {
-            const { url } = req.body;
-            const result = await openAiRepository.implementFetchSubtitles(
-                'https://www.youtube.com/watch?v=hUyj3d-BSh8'
-            );
-            res.json(result);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: error.message });
-        }
-    });
+            const {
+                query: url,
+                openAiKey,
+                pineconeKey,
+                pineconeIndex,
+                tavilyApiKey,
+            } = req.body;
 
-    router.post('/similarity-search', async (req, res) => {
-        try {
-            const { url } = req.body;
-            const result = await openAiRepository.implementSimilaritySearch(
-                'video about cardio'
+            if (
+                !url ||
+                !openAiKey ||
+                !pineconeKey ||
+                !pineconeIndex ||
+                !tavilyApiKey
+            ) {
+                return res
+                    .status(400)
+                    .json({ error: 'Missing required fields' });
+            }
+
+            configStore.updateConfig({
+                openAiKey,
+                pineconeKey,
+                pineconeIndex,
+                tavilyApiKey,
+            });
+
+            langChainRepository.updateClients();
+
+            if (!langChainRepository.isConfigured()) {
+                return res
+                    .status(500)
+                    .json({ error: 'Failed to configure clients' });
+            }
+
+            const result = await langChainRepository.implementFetchSubtitles(
+                url
             );
             res.json(result);
         } catch (error) {
@@ -45,18 +57,30 @@ export default function createRoutes({ openAiRepository }) {
 
     router.post('/rag-query', async (req, res) => {
         try {
-            //todo:implement request through params
-            // const { question } = req.body;
+            if (!configStore.isConfigured()) {
+                return res.status(400).json({
+                    error: 'Configuration not set. Please call /fetch-subtitles first.',
+                });
+            }
 
-            // if (!question) {
-            //     return res.status(400).json({ error: 'Question is required' });
-            // }
+            const query = req.body.query;
+            console.log('query>>>>>>', query);
 
-            const answer = await openAiRepository.ragQuery(
-                'What is the main idea of this video bout?'
+            if (!query) {
+                return res.status(400).json({ error: 'Query is required' });
+            }
+
+            const question = query;
+            const chatHistory = [];
+            const topK = 3;
+
+            const result = await langChainRepository.chatWithRag(
+                question,
+                chatHistory,
+                topK
             );
 
-            res.json({ answer });
+            res.json(result);
         } catch (error) {
             console.error('Error in RAG query:', error);
             res.status(500).json({

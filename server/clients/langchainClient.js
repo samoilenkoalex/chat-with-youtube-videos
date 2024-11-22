@@ -7,26 +7,37 @@ import fs from 'fs';
 
 export class LangchainCLient {
     constructor(apiKey) {
+        // Initialize isConfigured to false by default
+        this.isConfigured = false;
+
         if (!apiKey) {
-            throw new Error(
-                'Langchain API key is missing. Please set OPENAI_KEY in environment variables.'
-            );
+            console.warn('No API key provided to LangchainClient');
+            return;
         }
-        this.langchainClient = new ChatOpenAI({
-            apiKey: apiKey,
-            model: 'gpt-3.5-turbo',
-            temperature: 0.7,
-        });
-        this.embeddings = new OpenAIEmbeddings({
-            openAIApiKey: apiKey,
-        });
-    }
 
-    getChatModel() {
-        return this.langchainClient;
-    }
-}
+        try {
+            this.langchainClient = new ChatOpenAI({
+                apiKey: apiKey,
+                model: 'gpt-3.5-turbo',
+                temperature: 0.7,
+            });
 
-export function initLangchainCLient(apiKey) {
-    return new LangchainCLient(apiKey);
+            this.embeddings = new OpenAIEmbeddings({
+                openAIApiKey: apiKey,
+            });
+
+            // Test the client configuration
+            if (this.langchainClient && this.embeddings) {
+                this.isConfigured = true;
+            } else {
+                throw new Error(
+                    'Failed to initialize LangchainClient components'
+                );
+            }
+        } catch (error) {
+            console.error('Error configuring LangchainClient:', error);
+            this.isConfigured = false;
+            throw error;
+        }
+    }
 }

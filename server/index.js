@@ -1,13 +1,7 @@
-import dotenv from 'dotenv';
-
 import express from 'express';
 import cors from 'cors'; // Import the cors package
-import { LangchainCLient } from './clients/langchainClient.js';
 import { LangChainRepository } from './repositories/langchainRepository.js';
 import createRoutes from './routes/routes.js';
-import { PineConeClient } from './clients/pineconeClient.js';
-
-dotenv.config();
 
 const app = express();
 
@@ -16,15 +10,10 @@ app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-const langchainClient = new LangchainCLient(process.env.OPENAI_KEY);
-const pineconeClient = new PineConeClient(process.env.PINECONE_KEY);
 
-const openAiRepository = new LangChainRepository(
-    langchainClient,
-    pineconeClient
-);
+const langChainRepository = new LangChainRepository();
 
-app.use('/api', createRoutes({ openAiRepository }));
+app.use('/api', createRoutes({ langChainRepository }));
 
 // Start the server
 const PORT = process.env.PORT || 3000;
