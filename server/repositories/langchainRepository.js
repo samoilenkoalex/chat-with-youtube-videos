@@ -12,11 +12,6 @@ import xml2js from 'xml2js';
 import fs from 'fs';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { configStore } from '../configs/configStore.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const youtubeCookiesPath = './youtube-cookies.json';
 export class LangChainRepository {
@@ -24,7 +19,6 @@ export class LangChainRepository {
         this.langchainClient = null;
         this.pineconeClient = null;
         this.updateClients();
-        this.ytDlpPath = path.resolve(__dirname, '..', 'yt-dlp');
     }
 
     updateClients() {
@@ -64,7 +58,6 @@ export class LangChainRepository {
                 writeAutoSub: true,
                 addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
                 cookies: youtubeCookiesPath,
-                binaryPath: this.ytDlpPath,
             });
 
             if (!output.automatic_captions?.en) {
@@ -119,66 +112,6 @@ export class LangChainRepository {
                 `Create short summary of the following text: ${text}`
             );
         return chatCompletion.content;
-    }
-
-    async fetchYoutubeSubtitles(url) {
-        if (!url) {
-            throw new Error('URL is required');
-        }
-
-        try {
-            const output = await youtubedl(url, {
-                dumpSingleJson: true,
-                noCheckCertificates: true,
-                noWarnings: true,
-                preferFreeFormats: true,
-                subLang: 'en',
-                writeAutoSub: true,
-                addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
-                cookies: youtubeCookiesPath,
-            });
-
-            console.log('yt-dlp output:', JSON.stringify(output, null, 2)); // Add this line
-
-            if (!output.automatic_captions?.en) {
-                throw new Error('No English captions found for this video');
-            }
-
-            const captions = output.automatic_captions.en;
-            const srv1Caption = captions.find(
-                (caption) => caption.ext === 'srv1'
-            );
-
-            if (!srv1Caption) {
-                throw new Error('srv1 caption format not found');
-            }
-
-            const response = await axios.get(srv1Caption.url);
-            const xmlData = response.data;
-
-            return new Promise((resolve, reject) => {
-                xml2js.parseString(xmlData, (err, result) => {
-                    if (err) {
-                        reject(new Error('Failed to parse XML'));
-                        return;
-                    }
-
-                    if (!result?.transcript?.text) {
-                        reject(new Error('Invalid XML structure'));
-                        return;
-                    }
-
-                    const texts = result.transcript.text
-                        .map((text) => text._)
-                        .join(' ');
-
-                    resolve(texts);
-                });
-            });
-        } catch (error) {
-            console.error('Error in fetchYoutubeSubtitles:', error);
-            throw error;
-        }
     }
 
     async generateEmbeddings(text) {
