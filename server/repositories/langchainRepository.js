@@ -12,6 +12,11 @@ import xml2js from 'xml2js';
 import fs from 'fs';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { configStore } from '../configs/configStore.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const youtubeCookiesPath = './youtube-cookies.json';
 export class LangChainRepository {
@@ -19,6 +24,7 @@ export class LangChainRepository {
         this.langchainClient = null;
         this.pineconeClient = null;
         this.updateClients();
+        this.ytDlpPath = path.resolve(__dirname, '..', 'yt-dlp');
     }
 
     updateClients() {
@@ -58,6 +64,7 @@ export class LangChainRepository {
                 writeAutoSub: true,
                 addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
                 cookies: youtubeCookiesPath,
+                binaryPath: this.ytDlpPath,
             });
 
             if (!output.automatic_captions?.en) {
