@@ -1,6 +1,9 @@
-// download-yt-dlp.js
-const path = require('path');
-const { getYtDlpBinary } = require('youtube-dl-exec');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { getYtDlpBinary } from 'youtube-dl-exec';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 (async () => {
     try {

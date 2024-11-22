@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "start": "node server.js",
-        "postinstall": "node ./download-yt-dlp.js"
+        "postinstall": "node download-yt-dlp.js"
     },
     "author": "",
     "license": "ISC",
