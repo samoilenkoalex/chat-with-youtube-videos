@@ -21,7 +21,6 @@ class SubtitlesBloc extends Bloc<SubtitlesEvent, SubtitlesState> {
     final currentQuery = state.query;
     emit(SubtitlesLoading(query: currentQuery));
 
-  
     try {
       final result = await youtubeRepository.fetchSubtitles(
         query: currentQuery,
@@ -31,8 +30,6 @@ class SubtitlesBloc extends Bloc<SubtitlesEvent, SubtitlesState> {
         tavilyApiKey: event.tavilyApiKey,
       );
 
-
-      log('result: $result');
       if (result.isNotEmpty) {
         emit(SubtitlesLoaded(summary: result, query: currentQuery));
       } else {

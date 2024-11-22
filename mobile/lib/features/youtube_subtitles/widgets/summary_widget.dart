@@ -25,6 +25,9 @@ class SummaryWidget extends StatelessWidget {
       } else if (state is SubtitlesLoaded) {
         return Column(
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             Text(state.summary.toString()),
             const SizedBox(
               height: 20,
