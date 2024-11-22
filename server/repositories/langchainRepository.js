@@ -13,6 +13,7 @@ import fs from 'fs';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { configStore } from '../configs/configStore.js';
 
+const youtubeCookiesPath = './youtube-cookies.json';
 export class LangChainRepository {
     constructor() {
         this.langchainClient = null;
@@ -56,6 +57,7 @@ export class LangChainRepository {
                 subLang: 'en',
                 writeAutoSub: true,
                 addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
+                cookies: youtubeCookiesPath,
             });
 
             if (!output.automatic_captions?.en) {
