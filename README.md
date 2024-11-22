@@ -19,13 +19,12 @@
 
 1. Add Credentials and Youtube link
 
-
-
+https://github.com/user-attachments/assets/60452c79-b4b2-41cc-a5d0-03ea16fef396
 
 
 2. Chat on video content
 
-
+https://github.com/user-attachments/assets/07b27aab-fb47-4a50-90f2-5ee91d3d6c6c
 
 
 
