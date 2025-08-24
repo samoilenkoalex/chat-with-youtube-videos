@@ -60,7 +60,5 @@ Go to app/lib/services/api_service.dart and change the baseUrl to your server pa
 **3. run flutter web and fill in credentials on the homepage**
 
 
-Created by Oleksandr Samoilenko
-
-[Extrawest.com](https://www.extrawest.com), 2024
+Created by Oleksandr Samoilenko, 2024
 
