@@ -1,6 +1,6 @@
 # Youtube video chat app
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)]()
-[![Maintaner](https://img.shields.io/static/v1?label=Oleksandr%20Samoilenko&message=Maintainer&color=red)](mailto:oleksandr.samoilenko@extrawest.com)
+[![Maintaner](https://img.shields.io/static/v1?label=Oleksandr%20Samoilenko&message=Maintainer&color=red)](mailto:oleksandr.samoileko@gmail.com)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)]()
 ![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)
 ![GitHub release](https://img.shields.io/badge/release-v1.0.0-blue)
